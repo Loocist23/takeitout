@@ -20,9 +20,9 @@ Cette application est un outil permettant de visualiser, sélectionner et suppri
    cd nom-du-repo
    ```
 
-2. Installez les dépendances nécessaires avec `pip` :
+2. Installez les dépendances nécessaires via `requirements.txt` :
    ```bash
-   pip install pillow
+   pip install -r requirements.txt
    ```
 
 ## Utilisation
