@@ -16,8 +16,8 @@ Cette application est un outil permettant de visualiser, sélectionner et suppri
 
 1. Clonez ce dépôt ou téléchargez le code source :
    ```bash
-   git clone https://github.com/ton-utilisateur/nom-du-repo.git
-   cd nom-du-repo
+   git clone https://github.com/Loocist23/takeitout.git
+   cd takeitout
    ```
 
 2. Installez les dépendances nécessaires via `requirements.txt` :
