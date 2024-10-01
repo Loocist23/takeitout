@@ -25,7 +25,7 @@ def update_image_display():
         display_image_metadata(image_path)
         update_buttons()
 
-# Fonction pour afficher les métadonnées d'une image avec des cases à cocher
+# Fonction pour afficher les métadonnées d'une image avec des cases à cocher et une barre de défilement
 def display_image_metadata(image_path):
     global checkbox_vars
     try:
@@ -34,29 +34,42 @@ def display_image_metadata(image_path):
         # Vider la zone d'affichage des métadonnées
         for widget in metadata_frame.winfo_children():
             widget.destroy()
-        
-        metadata_label = tk.Label(metadata_frame, text="=== MÉTADONNÉES ===", font=("Arial", 14))
-        metadata_label.pack(pady=10)
 
-        # Réinitialiser les checkbox variables
-        checkbox_vars.clear()
+        checkbox_vars.clear()  # Réinitialiser les variables des cases à cocher
 
-        # Afficher les métadonnées de Pillow
+        # Cadre pour les métadonnées avec barre de défilement
+        canvas = tk.Canvas(metadata_frame)
+        scrollbar = tk.Scrollbar(metadata_frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Afficher les métadonnées avec des cases à cocher
         metadata = img.info
         if metadata:
             for key, value in metadata.items():
                 var = tk.BooleanVar()  # Créer une variable pour chaque case à cocher
                 checkbox_vars[key] = var
-                frame = tk.Frame(metadata_frame)
-                frame.pack(anchor='w')
-                
+
+                frame = tk.Frame(scrollable_frame)
+                frame.pack(anchor='w', pady=2)
+
                 checkbox = tk.Checkbutton(frame, text=key, variable=var)
                 checkbox.pack(side=tk.LEFT)
-                
+
                 metadata_value_label = tk.Label(frame, text=str(value), wraplength=300)
                 metadata_value_label.pack(side=tk.LEFT, padx=5)
         else:
-            label_no_metadata = tk.Label(metadata_frame, text="Aucune métadonnée PIL trouvée.")
+            label_no_metadata = tk.Label(scrollable_frame, text="Aucune métadonnée PIL trouvée.")
             label_no_metadata.pack()
 
     except Exception as e:
@@ -206,7 +219,7 @@ previous_button.pack(side=tk.LEFT, padx=10)
 next_button = tk.Button(image_frame, text="Suivant", command=next_image, state=tk.DISABLED)
 next_button.pack(side=tk.RIGHT, padx=10)
 
-# Section pour afficher les métadonnées avec des cases à cocher
+# Section pour afficher les métadonnées avec une barre de défilement
 metadata_frame = tk.Frame(main_frame)
 metadata_frame.pack(side=tk.RIGHT, padx=10, fill=tk.Y)
 
